@@ -132,3 +132,42 @@ class Animator {
         }
     }
 }
+
+class LRCNode {
+
+    state : State = new State()
+    prev : LRCNode 
+    next : LRCNode 
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        this.next = new LRCNode(this.i + 1)
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        DrawingUtil.drawLRCNode(context, this.i, this.state.scale)
+    }
+
+    update(cb : Function) {
+        this.state.update(cb)
+    }
+
+    startUpdating(cb : Function) {
+        this.state.startUpdating(cb)
+    }
+
+    getNext(dir : number, cb : Function) : LRCNode {
+        var curr : LRCNode = this.prev 
+        if (dir == 1) {
+            curr = this.next 
+        }
+        if (curr) {
+            return curr 
+        }
+        cb()
+        return this 
+    }
+}
