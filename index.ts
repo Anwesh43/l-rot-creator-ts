@@ -194,3 +194,25 @@ class LRotCreator {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    lrc : LRotCreator = new LRotCreator()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.lrc.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.lrc.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.lrc.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
