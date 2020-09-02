@@ -4,7 +4,7 @@ const parts : number = 2
 const scGap : number = 0.02 / parts  
 const strokeFactor : number = 90
 const sizeFactor : number = 4.8 
-const delay : number = 90 
+const delay : number = 30 
 const backColor : string = "#bdbdbd"
 const colors : Array<string> = ["#F44336", "#3F51B5", "#009688", "#2196F3", "#4CAF50"]
 const rot : number = Math.PI / 2  
@@ -27,6 +27,9 @@ class ScaleUtil {
 class DrawingUtil {
 
     static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        if (x1 == x2 && y1 == y2) {
+            return
+        }
         context.beginPath()
         context.moveTo(x1, y1)
         context.lineTo(x2, y2)
@@ -35,8 +38,8 @@ class DrawingUtil {
 
     static drawLRotCreator(context : CanvasRenderingContext2D, scale : number) {
         const sf : number = ScaleUtil.sinify(scale)
-        const sf1 : number = ScaleUtil.divideScale(sf, 0, 2)
-        const sf2 : number = ScaleUtil.divideScale(sf, 1, 2)
+        const sf1 : number = ScaleUtil.divideScale(sf, 0, parts + 1)
+        const sf2 : number = ScaleUtil.divideScale(sf, 1, parts + 1)
         const size : number = Math.min(w, h) / sizeFactor 
         context.save()
         context.translate(w / 2, h / 2)
@@ -148,7 +151,10 @@ class LRCNode {
     }
 
     addNeighbor() {
-        this.next = new LRCNode(this.i + 1)
+        if (this.i < colors.length - 1) {
+            this.next = new LRCNode(this.i + 1)
+            this.next.prev = this 
+        }
     }
 
     draw(context : CanvasRenderingContext2D) {
